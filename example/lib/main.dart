@@ -1,24 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:textfield_state/textfield_state.dart';
 
-class DemoTextField extends StatelessWidget {
-  const DemoTextField(this.state);
-  final TextFieldState state;
-  @override
-  Widget build(BuildContext context) => TextField(
-        controller: state.controller,
-        focusNode: state.focusNode,
-        decoration: InputDecoration(
-          helperText: 'focused: ${state.focusNode.hasFocus}, '
-              'primary: ${state.focusNode.hasPrimaryFocus}\n'
-              'text: ${state.controller.text}\n'
-              'controller instance: ${state.controller.hashCode}\n'
-              'focusNode instance: ${state.focusNode.hashCode}',
-          helperMaxLines: 5,
-        ),
-      );
-}
-
+/// Demo 1 - state only
 class Demo1 extends StatefulWidget {
   @override
   _Demo1State createState() => _Demo1State();
@@ -50,6 +33,7 @@ class _Demo1State extends State<Demo1> {
   Widget build(BuildContext context) => DemoTextField(state);
 }
 
+/// Demo 2 - widget defined
 class Demo2 extends StatefulWidget {
   const Demo2(this.controller, this.focusNode);
 
@@ -93,11 +77,10 @@ class _Demo2State extends State<Demo2> {
   Widget build(BuildContext context) => DemoTextField(state);
 }
 
+/// Demo 3 - text only
 class Demo3 extends StatefulWidget {
   const Demo3(this.text);
-
   final String text;
-
   @override
   _Demo3State createState() => _Demo3State();
 }
@@ -133,6 +116,27 @@ class _Demo3State extends State<Demo3> {
   @override
   Widget build(BuildContext context) => DemoTextField(state);
 }
+
+/// Helper for dumping info, shows connection to TextField.
+class DemoTextField extends StatelessWidget {
+  const DemoTextField(this.state);
+  final TextFieldState state;
+  @override
+  Widget build(BuildContext context) => TextField(
+        controller: state.controller,
+        focusNode: state.focusNode,
+        decoration: InputDecoration(
+          helperText: 'focused: ${state.focusNode.hasFocus}, '
+              'primary: ${state.focusNode.hasPrimaryFocus}\n'
+              'text: ${state.controller.text}\n'
+              'controller instance: ${state.controller.hashCode}\n'
+              'focusNode instance: ${state.focusNode.hashCode}',
+          helperMaxLines: 5,
+        ),
+      );
+}
+
+// ---
 
 void main() {
   runApp(MyApp());
