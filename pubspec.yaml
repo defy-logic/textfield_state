@@ -1,6 +1,6 @@
 name: textfield_state
 description: A helper class for maintaining a TextEditingController and/or a FocusNode for a State and its Widgets.
-version: 0.2.0
+version: 0.2.0+1
 homepage: https://github.com/defy-logic/textfield_state
 
 environment:
