@@ -15,29 +15,26 @@ typedef void _FocusChanged(bool focused);
 ///
 /// Don't forget to call [dispose()] from [State.dispose()]!
 class TextFieldState {
-  /// `controller` and `focusNode` are from the state's widget, if applicable.
+  /// `controller`, `focusNode`, and `text` are from the state's widget, if applicable.
   /// They are provided here for convenience instead of having to call
   /// `update()` after construction.
   TextFieldState({
     _TextChanged textChanged,
     _FocusChanged focusChanged,
     _FocusChanged primaryFocusChanged,
-    this.initialText,
+    String text,
     TextEditingController controller,
     FocusNode focusNode,
   })  : textChanged = textChanged,
         focusChanged = focusChanged,
         primaryFocusChanged = primaryFocusChanged {
-    _updateController(controller);
+    _updateController(controller, text);
     _updateFocusNode(focusNode);
   }
 
   final _TextChanged textChanged;
   final _FocusChanged focusChanged;
   final _FocusChanged primaryFocusChanged;
-
-  /// The [controller] will be initialized with this value.
-  final String initialText;
 
   bool get _usesController => textChanged != null;
   bool get _usesFocusNode =>
@@ -56,7 +53,7 @@ class TextFieldState {
   bool _hadFocus;
   bool _hadPrimaryFocus;
 
-  void _updateController(TextEditingController widgetController) {
+  void _updateController(TextEditingController widgetController, String text) {
     if (!_usesController) return;
 
     if (widgetController != _widgetController) {
@@ -68,18 +65,26 @@ class TextFieldState {
 
         if (!hasController) {
           assert(_controller == null);
-          _controller =
-              TextEditingController.fromValue(_widgetController.value);
+          if (text != null &&
+              text != _widgetInitialText &&
+              text != _widgetController.text) {
+            _controller = TextEditingController(text: text);
+          } else {
+            _controller =
+                TextEditingController.fromValue(_widgetController.value);
+          }
           _controller.addListener(_handleControllerChanged);
         }
       }
 
       if (hasController) {
+        final defaultText = text ?? widgetController.text;
+
         /// Don't reset text if reconstructing with the same initial value.
-        if (widgetController.text == _widgetInitialText) {
+        if (defaultText == _widgetInitialText) {
           widgetController.value = controller.value;
         } else {
-          _widgetInitialText = widgetController.text;
+          _widgetInitialText = defaultText;
         }
         _controller?.dispose();
         _controller = null;
@@ -89,10 +94,16 @@ class TextFieldState {
 
     _widgetController = widgetController;
 
-    // Ensure initialized
-    if (controller == null) {
-      _widgetInitialText = null;
-      _controller = TextEditingController(text: _prevText ?? initialText ?? '');
+    if (_controller != null) {
+      final dirty = text != null &&
+          text != _widgetInitialText &&
+          text != _controller.text;
+
+      _widgetInitialText = text;
+      if (dirty) _controller.text = text;
+    } else {
+      // Ensure initialized
+      _controller = TextEditingController(text: text ?? _prevText ?? '');
       _controller.addListener(_handleControllerChanged);
     }
   }
@@ -124,11 +135,15 @@ class TextFieldState {
   ///
   /// Also call it during [State.initState()] if these values weren't passed to
   /// the constructor.
+  ///
+  /// If [text] is passed, it will become the (given or current) controller's
+  /// text unless it matches the controller's initial value.
   void update({
     TextEditingController controller,
     FocusNode focusNode,
+    String text,
   }) {
-    _updateController(controller);
+    _updateController(controller, text);
     _updateFocusNode(focusNode);
   }
 

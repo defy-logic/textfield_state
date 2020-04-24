@@ -33,7 +33,7 @@ class _Demo1State extends State<Demo1> {
       textChanged: _rebuild,
       focusChanged: _rebuild,
       primaryFocusChanged: _rebuild,
-      initialText: 'Demo 1',
+      text: 'Demo 1 - state only',
     );
     super.initState();
   }
@@ -93,6 +93,47 @@ class _Demo2State extends State<Demo2> {
   Widget build(BuildContext context) => DemoTextField(state);
 }
 
+class Demo3 extends StatefulWidget {
+  const Demo3(this.text);
+
+  final String text;
+
+  @override
+  _Demo3State createState() => _Demo3State();
+}
+
+class _Demo3State extends State<Demo3> {
+  TextFieldState state;
+
+  @override
+  void initState() {
+    state = TextFieldState(
+      textChanged: _rebuild,
+      focusChanged: _rebuild,
+      primaryFocusChanged: _rebuild,
+      text: widget.text,
+    );
+    super.initState();
+  }
+
+  void _rebuild(_) => setState(() {});
+
+  @override
+  void didUpdateWidget(Demo3 oldWidget) {
+    state.update(text: widget.text);
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    state.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => DemoTextField(state);
+}
+
 void main() {
   runApp(MyApp());
 }
@@ -107,6 +148,7 @@ class _MyAppState extends State<MyApp> {
   /// There's a Flutter issue when creating a FocusNode on every build.
   /// See https://stackoverflow.com/a/57586327/884522.
   final focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -119,12 +161,14 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(title: Text('TextFieldState Demo')),
           body: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.all(64),
+              padding: EdgeInsets.all(32),
               child: Column(
                 children: <Widget>[
                   Demo1(),
                   SizedBox(height: 24),
-                  Demo2(TextEditingController(text: 'Demo 2'), focusNode),
+                  Demo2(TextEditingController(text: 'Demo 2 - widget defined'), focusNode),
+                  SizedBox(height: 24),
+                  Demo3('Demo 3 - text only'),
                   SizedBox(height: 24),
                   RaisedButton(
                     child: Text('Rebuild'),
