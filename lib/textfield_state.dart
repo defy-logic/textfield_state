@@ -36,7 +36,6 @@ class TextFieldState {
   final _FocusChanged focusChanged;
   final _FocusChanged primaryFocusChanged;
 
-  bool get _usesController => textChanged != null;
   bool get _usesFocusNode =>
       focusChanged != null || primaryFocusChanged != null;
 
@@ -53,9 +52,9 @@ class TextFieldState {
   bool _hadFocus;
   bool _hadPrimaryFocus;
 
-  void _updateController(TextEditingController widgetController, String text) {
-    if (!_usesController) return;
+  String get text => controller?.text ?? '';
 
+  void _updateController(TextEditingController widgetController, String text) {
     if (widgetController != _widgetController) {
       final hasController = widgetController != null;
       final hadController = _widgetController != null;
