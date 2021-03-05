@@ -8,7 +8,7 @@ class Demo1 extends StatefulWidget {
 }
 
 class _Demo1State extends State<Demo1> {
-  TextFieldState state;
+  late final TextFieldState state;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class Demo2 extends StatefulWidget {
 }
 
 class _Demo2State extends State<Demo2> {
-  TextFieldState state;
+  late final TextFieldState state;
 
   @override
   void initState() {
@@ -86,7 +86,7 @@ class Demo3 extends StatefulWidget {
 }
 
 class _Demo3State extends State<Demo3> {
-  TextFieldState state;
+  late final TextFieldState state;
 
   @override
   void initState() {
@@ -158,8 +158,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: 'TextFieldState Demo',
         theme: ThemeData(
-          inputDecorationTheme:
-              InputDecorationTheme(border: OutlineInputBorder()),
+          inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
         ),
         home: Scaffold(
           appBar: AppBar(title: Text('TextFieldState Demo')),
@@ -174,7 +173,7 @@ class _MyAppState extends State<MyApp> {
                   SizedBox(height: 24),
                   Demo3('Demo 3 - text only'),
                   SizedBox(height: 24),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text('Rebuild'),
                     onPressed: () => setState(() {}),
                   )

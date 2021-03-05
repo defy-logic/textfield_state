@@ -1,3 +1,7 @@
+## [0.3.0]
+
+- Support null safety
+
 ## [0.2.1] - 2020-06-11
 
 - Fix controller not created if textChanged not defined.
